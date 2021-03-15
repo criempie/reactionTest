@@ -9,11 +9,15 @@
   <title>reaction</title>
  </head>
  <body>
-
     <div class="container">
-      <button class="button" id="start">Запустить</button>
+      <div class="buttonHolder">
+        <button class="button" id="start">Запустить</button>
+        <button class="button" id="set50fps">50 fps</button>
+        <button class="button" id="set60fps">60 fps</button>
+      </div>
       <div class="videoHolder">
-        <video id="video" preload="auto" muted></video>
+        <video class="video" id="video1" style="opacity: 0" muted></video>
+        <video class="video" id="video2" style="opacity: 0" muted></video> 
       </div>
     </div>
 

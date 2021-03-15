@@ -1,6 +1,6 @@
 let videoPath = "./tests/";
 let videoName = "PsySample";
-let fps = "50";
+let fps = "60";
 let format = "mp4";
 let videoCount = 2;
 
@@ -8,11 +8,24 @@ let timer;
 let reactionTime;
 let reactionTimeList = [];
 
-const pathBuilder = (n) => videoPath + videoName + n + "_" + fps + "." + format;
+let i = 1;
 
-function setVideo(n) {
-    $("#video").attr("src", pathBuilder(n));
-    $("#video").trigger("play");
+const pathBuilder = (n) => videoPath + videoName + "_" + fps + "_" + n + "." + format;
+
+function updateVideo(n) {
+    if (n === "stop") return;
+    if (n % 2 !== 0) {
+        $("#video1").attr("style", "opacity: 1");
+        $("#video2").attr("style", "opacity: 0");
+        // if (n < videoCount) $("#video2").attr("src", pathBuilder(n+1))
+        $("#video1").trigger("play");
+    } else {
+        $("#video2").attr("style", "opacity: 1");
+        $("#video1").attr("style", "opacity: 0");
+        // if (n < videoCount) $("#video1").attr("src", pathBuilder(n+1))
+        $("#video2").trigger("play");
+    }
+
     timer = performance.now();
 }
 
@@ -28,20 +41,44 @@ $(document).ready(() => {
     // })
     
     $("#start").on("click", () => setTimeout(() => {
-        setVideo(1);
+        $("#video1").attr("src", pathBuilder(1));
+        $("#video2").attr("src", pathBuilder(2));
+        updateVideo(1);
         $("#start").remove(); 
-    }, 500))
+    }, 100))
 
-    $("#video").on("ended", () => {
+    $("#set50fps").on("click", () => {
+        fps = "50";
+        $("#video1").attr("src", pathBuilder(1));
+        $("#video2").attr("src", pathBuilder(2));
+        updateVideo(1);
+    })
+    $("#set60fps").on("click", () => {
+        fps = "60";
+        $("#video1").attr("src", pathBuilder(1));
+        $("#video2").attr("src", pathBuilder(2));
+        updateVideo(1);
+    })
+
+    $("#video1").on("ended", () => {
         reactionTime = performance.now() - timer; 
+        i++;
         console.log(reactionTime)
-        setVideo(2);
-        // if (reactionTime < 1000) {
-        //     reactionTimeList.push(reactionTime);
-        //     setVideo(2);
-        // } else {
-        //     setVideo(2);
-        // }
+        if (i > videoCount) {
+            i = 1;
+        }
+        updateVideo(i)
+        // updateVideo(i <= videoCount ? i : "stop")
+    })
+    $("#video2").on("ended", () => {
+        reactionTime = performance.now() - timer; 
+        i++;
+        console.log(reactionTime)
+        if (i > videoCount) {
+            i = 1;
+        }
+        updateVideo(i)
+        // updateVideo(i <= videoCount ? i : "stop")
     })
 })
 
