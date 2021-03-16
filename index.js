@@ -9,6 +9,7 @@ let reactionTime;
 let reactionTimeList = [];
 
 let i = 1;
+let totalClicks = 0;
 
 const pathBuilder = (n) => videoPath + videoName + "_" + fps + "_" + n + "." + format;
 
@@ -18,7 +19,9 @@ function updateVideo(n) {
         $("#video1").attr("style", "opacity: 1");
         $("#video2").attr("style", "opacity: 0");
         // if (n < videoCount) $("#video2").attr("src", pathBuilder(n+1))
+        
         $("#video1").trigger("play");
+        timer = performance.now();
     } else {
         $("#video2").attr("style", "opacity: 1");
         $("#video1").attr("style", "opacity: 0");
@@ -30,16 +33,25 @@ function updateVideo(n) {
 }
 
 $(document).ready(() => {
-    // $(document).on("click", () => {
-    //     reactionTime = performance.now() - timer;
-    //     console.log(reactionTime)
-    //     if (reactionTime <= 20) {
-    //         console.log("Слишком рано: ", reactionTime);
-    //     } else if (reactionTime >= 1020) {
-    //         console.log("Слишком поздно: ", reactionTime);
-    //     }
-    // })
+    $(".container").on("click", () => {
+        reactionTime = performance.now() - timer;
+        if (reactionTime <= 20) {
+            console.log("Слишком рано: ", reactionTime);
+        } else if (reactionTime >= 1020) {
+            console.log("Слишком поздно: ", reactionTime);
+        }
+        totalClicks++;
+        reactionTimeList.push(reactionTime);
+    })
     
+    $("#video1").on("canplay", res => {
+        let perf = performance.now();
+        let tim = timer;
+        console.log(res.timeStamp, perf, tim)
+        console.log("1-2: ", res.timeStamp - perf)
+        console.log("2-3: ", perf - tim)
+    })
+
     $("#start").on("click", () => setTimeout(() => {
         $("#video1").attr("src", pathBuilder(1));
         $("#video2").attr("src", pathBuilder(2));
@@ -63,17 +75,19 @@ $(document).ready(() => {
     $("#video1").on("ended", () => {
         reactionTime = performance.now() - timer; 
         i++;
-        console.log(reactionTime)
+        // console.log(reactionTime)
         if (i > videoCount) {
             i = 1;
         }
-        updateVideo(i)
+        
+        if (totalClicks < 5) updateVideo(i)
+        else console.log(reactionTimeList)
         // updateVideo(i <= videoCount ? i : "stop")
     })
     $("#video2").on("ended", () => {
         reactionTime = performance.now() - timer; 
         i++;
-        console.log(reactionTime)
+        // console.log(reactionTime)
         if (i > videoCount) {
             i = 1;
         }
