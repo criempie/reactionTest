@@ -13,7 +13,7 @@ html, body {
     position: relative;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
+    justify-content: center;
 
     background-color: #111011;
 }
@@ -43,4 +43,16 @@ html, body {
 
 .button:hover {
     cursor:pointer;
+}
+
+.table {
+    display: flex;
+    color: white;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
 }

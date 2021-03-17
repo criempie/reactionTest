@@ -1,98 +1,81 @@
 let videoPath = "./tests/";
 let videoName = "PsySample";
-let fps = "60";
+let fps = 50;
 let format = "mp4";
-let videoCount = 2;
-
-let timer;
-let reactionTime;
-let reactionTimeList = [];
-
-let i = 1;
-let totalClicks = 0;
 
 const pathBuilder = (n) => videoPath + videoName + "_" + fps + "_" + n + "." + format;
 
-function updateVideo(n) {
-    if (n === "stop") return;
-    if (n % 2 !== 0) {
-        $("#video1").attr("style", "opacity: 1");
-        $("#video2").attr("style", "opacity: 0");
-        // if (n < videoCount) $("#video2").attr("src", pathBuilder(n+1))
-        
-        $("#video1").trigger("play");
-        timer = performance.now();
-    } else {
-        $("#video2").attr("style", "opacity: 1");
-        $("#video1").attr("style", "opacity: 0");
-        // if (n < videoCount) $("#video1").attr("src", pathBuilder(n+1))
-        $("#video2").trigger("play");
-    }
+let videoElements;
+let buttons;
 
-    timer = performance.now();
+let timer;
+let clicks = 0;
+let maxClicks = 3;
+
+let times = [];
+let whenHappend = [];
+let whenRecorded = [];
+
+function playVideo() {
+    videoElements[0].attr("src", pathBuilder(1));
+    $("#video1").trigger("play")
 }
 
 $(document).ready(() => {
-    $(".container").on("click", () => {
-        reactionTime = performance.now() - timer;
-        if (reactionTime <= 20) {
-            console.log("Слишком рано: ", reactionTime);
-        } else if (reactionTime >= 1020) {
-            console.log("Слишком поздно: ", reactionTime);
-        }
-        totalClicks++;
-        reactionTimeList.push(reactionTime);
-    })
+    videoElements = [
+        $("#video1"),
+        // $("#video2"),
+    ];
+
+    buttons = {
+        start: $("#start"),
+        set50fps: $("#set50fps"),
+        set60fps: $("#set60fps"),
+    };
     
-    $("#video1").on("canplay", res => {
-        let perf = performance.now();
-        let tim = timer;
-        console.log(res.timeStamp, perf, tim)
-        console.log("1-2: ", res.timeStamp - perf)
-        console.log("2-3: ", perf - tim)
-    })
+    buttons.set50fps.on("click", () => {fps = 50});
+    buttons.set60fps.on("click", () => {fps = 60});
+    // buttons.start.on("click", playVideo)
 
-    $("#start").on("click", () => setTimeout(() => {
-        $("#video1").attr("src", pathBuilder(1));
-        $("#video2").attr("src", pathBuilder(2));
-        updateVideo(1);
-        $("#start").remove(); 
-    }, 100))
+    videoElements[0].on("canplay", r => {
+        // setTimeout(() => {
+        //     starts.push(r.timeStamp)
+        // }, 100);
+        timer = r.timeStamp;
 
-    $("#set50fps").on("click", () => {
-        fps = "50";
-        $("#video1").attr("src", pathBuilder(1));
-        $("#video2").attr("src", pathBuilder(2));
-        updateVideo(1);
-    })
-    $("#set60fps").on("click", () => {
-        fps = "60";
-        $("#video1").attr("src", pathBuilder(1));
-        $("#video2").attr("src", pathBuilder(2));
-        updateVideo(1);
-    })
-
-    $("#video1").on("ended", () => {
-        reactionTime = performance.now() - timer; 
-        i++;
-        // console.log(reactionTime)
-        if (i > videoCount) {
-            i = 1;
-        }
+        // if (clicks < maxClicks) setTimeout(() => {
+        //     $(".videoHolder").click();
+        // }, 500)
         
-        if (totalClicks < 5) updateVideo(i)
-        else console.log(reactionTimeList)
-        // updateVideo(i <= videoCount ? i : "stop")
-    })
-    $("#video2").on("ended", () => {
-        reactionTime = performance.now() - timer; 
-        i++;
-        // console.log(reactionTime)
-        if (i > videoCount) {
-            i = 1;
-        }
-        updateVideo(i)
-        // updateVideo(i <= videoCount ? i : "stop")
-    })
-})
+    });
 
+    // $(".videoHolder").on("click", r => {
+    //     if (clicks < maxClicks) {
+    //         times.push(performance.now() - timer);
+    //         clicks++;
+    //     } else {
+    //         console.log(times)
+    //     }
+        
+    // });
+
+    videoElements[0].on("ended", r => {
+        // setTimeout(() => {
+        //     ends.push(r.timeStamp)
+        // }, 100);
+        console.log("diff: ", r.timeStamp - timer);
+
+        // if (clicks >= maxClicks) {
+        //     $(".videoHolder").attr("style", "display: none")
+        // } else {
+        //     playVideo()
+        // }
+
+        // setTimeout(() => {
+        //     i++;
+        // }, 100);
+        playVideo()
+    });
+    playVideo();
+
+});
