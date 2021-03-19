@@ -2,6 +2,7 @@
 <html>
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <!-- <meta http-equiv="Cache-Control" content="no-cache"> -->
   <script src="./jquery-3.6.0.min.js"></script>
   <script type="text/javascript" src="./index.js"></script>
   <link rel="stylesheet" href="./index.css" />
@@ -10,30 +11,10 @@
  </head>
  <body>
     <div class="container">
-      <div class="buttonHolder">
-        <!-- <button class="button" id="start">Запустить</button> -->
-        <button class="button" id="set50fps">50 fps</button>
-        <button class="button" id="set60fps">60 fps</button>
-      </div> 
-
-      <div class="videoHolder">
-        <video class="video" id="video1" preload="auto" style="opacity: 1" muted></video>
-        <video class="video" id="video2" preload="auto" style="opacity: 0" muted></video> 
+      <div class="videoHolder" id="test">
+        <video id="video" preload="auto" muted width="1280" height="720"></video>
       </div>
-
-      <!-- <div class="table">
-        <div id="c1" class="column">
-          <span class="tableTitle">Произошло событие</span>
-        </div>
-          
-        <div id ="c2" class="column">
-          <span class="tableTitle">Когда записалось</span>
-        </div>
-
-        <div id ="c3" class="column">
-          <span class="tableTitle">Разность</span>
-        </div>
-      </div> -->
+      <button class="button" id="start">Запустить</button>
     </div>
 
  </body>
