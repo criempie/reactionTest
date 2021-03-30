@@ -71,3 +71,9 @@ html, body {
     color: white;
     margin-right: 5px;
 }
+
+h1 {
+    color: white;
+    display: none;
+    margin: 0 auto
+}

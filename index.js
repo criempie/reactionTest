@@ -1,27 +1,20 @@
 let videoPath = "./tests/";
-let videoName = "PsySample";
-let fps = "50";
-let format = "mp4";
+let videoName = "a_PsySample.mp4";
 
-let timer1;
-let vid_no = 0;
+let timer;
 
-let counter = 0;
-let maxCount = 5;
+let counter = 1;
+let maxCount = 6;
 
 let diffs = [];
 
-const pathBuilder = (n) => videoPath + videoName + n + "_" + fps + "." + format;
-let vidos = [
-	"PsySample_50_1.mp4",
-	"PsySample_60_1.mp4"
-	]
 
-function setVideo(n) {
-	// timer1 = performance.now();
+function setVideo() {
+	// timer = performance.now();
 	setTimeout(() => {
-		$("#video").attr("src", videoPath + vidos[n] + "?t=" + Date.now());
-	}, 100);
+		// $("#video").attr("src", videoPath + vidos[n] + "?t=" + Date.now());
+		$("#video").attr("src", videoPath + counter + videoName);
+	}, 300 + Math.floor(Math.random() * 350));
 }
 
 $(document).ready(() => {
@@ -30,23 +23,36 @@ $(document).ready(() => {
     $("#start").on("click", () => {
         $("#start").remove();
 		document.documentElement.requestFullscreen();
-		setVideo(vid_no);
+		$("#ready").attr("style", "display: block");
+		$(document).keydown(event => {
+			if (event.keyCode === 32) {
+				setVideo();
+				$("#ready").attr("style", "display: none");
+				$(document).keydown(() => {return})
+			}
+		})
+
+		setTimeout(() => {
+			$(document).on("click", () => {
+				setVideo();
+				$("#ready").attr("style", "display: none");
+				$(document).on("click", () => {return})
+			})
+		}, 0);
 	})
 
 	$("#video").on("loadeddata", () => {
-		timer1 = performance.now();
+		timer = performance.now();
 		$("#video").trigger("play");
 	})
 
     $("#video").on("ended", () => {
-        let reactionTime = performance.now() - timer1; 
-		// console.log(vidos[vid_no] + " " + reactionTime)
-		// vid_no = (vid_no + 1 ) % (vidos.length);
+        let reactionTime = performance.now() - timer; 
 		diffs.push(reactionTime);
 		counter++;
 
-		if (counter < maxCount) {
-			setVideo(vid_no);
+		if (counter <= maxCount) {
+			setVideo();
 		} else {
 			document.exitFullscreen();
 			$(".videoHolder").remove();
